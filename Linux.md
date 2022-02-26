@@ -1235,31 +1235,31 @@ $ ip -details -statistics link show can0
 
 ```bash
 fdisk "磁盘节点名称"
-command										:p			(查看当前分区情况)
-command										:n			(选择新建分区指令)
-selected partition							:			(填写需要新建的分区号)
-Last sector, +sectors or +size{K,M,G,T,P}	:			(大小根据需求填写新建分区大小如"+1G/+1M")
-command										:w			(将修改写入磁盘)
+command                                         :p			(查看当前分区情况)
+command                                         :n			(选择新建分区指令)
+selected partition                              :			(填写需要新建的分区号)
+Last sector, +sectors or +size{K,M,G,T,P}       :			(大小根据需求填写新建分区大小如"+1G/+1M")
+command                                         :w			(将修改写入磁盘)
 ```
 
 删除分区
 
 ```bash
 fdisk "磁盘节点名称"
-command							:p				(查看当前分区情况)
-command							:d				(选择删除分区指令)
-selected partition				:				(填写需要删除的分区号)
-command							:w				(将修改写入磁盘)
+command                                         :p				(查看当前分区情况)
+command                                         :d				(选择删除分区指令)
+selected partition                              :				(填写需要删除的分区号)
+command                                         :w				(将修改写入磁盘)
 ```
 
 修改分区文件系统类型
 
 ```bash
 fdisk "磁盘节点名称"     
-command							:p				(查看当前分区情况)
-command							:t				(选择修改分区类型指令)
-selected partition				:				(填写需要修改分区类型的分区号)
-Hex code						:				(此时输入l可以查看所支持的所有系统类型的编号)
+command                                         :p				(查看当前分区情况)
+command                                         :t				(选择修改分区类型指令)
+selected partition                              :				(填写需要修改分区类型的分区号)
+Hex code                                        :				(此时输入l可以查看所支持的所有系统类型的编号)
 ```
 
 
