@@ -226,7 +226,8 @@ clean:
 
 需要在插入模块时动态填入参数，则可以用到头文件<linux/moduleparam.h>中的宏
 
-##### module_param
+---
+&rArr;module_param
 
 最常用的是module_param,它的定义如下:
 
@@ -255,8 +256,8 @@ param_ops_##type
 ```bash
 /sys/module/[module_name]/parameters
 ```
-
-##### module_param_named
+---
+&rArr;module_param_named
 
 我们将/sys/module/[module_name]/parameters/demo_param和insmod demo.ko demo_param=123称为变量的外部名称，将在模块内部定义的用来接收外部传入值的变量称为内部变量。用module_param宏时它们外部变量和内部变量的名字相同都是name中填入的名字。在少数情况下我们想要这两者不同，则可以使用module_param_named，它的定义如下:
 
@@ -272,8 +273,8 @@ module_param_named(name, variable, type, perm);
 #define module_param(name, type, perm)				\
 	module_param_named(name, name, type, perm)
 ```
-
-##### module_param_array
+---
+&rArr;module_param_array
 
 如果要同时获取多个变量则需要使用module_param_array，它的定义如下:
 
@@ -306,7 +307,8 @@ module_param_array(demo_param, int, NULL, 0400);
 
 同时要注意字符串数组中的字符串似乎不能包含逗号，否则一个字符串会被解析成两个。
 
-##### module_param_array_named
+---
+&rArr;module_param_array_named
 
 同样有区别内部变量和外部变量的宏module_param_array_named，它的定义如下:
 
@@ -320,8 +322,8 @@ module_param_array_named(name, array, type, nump, perm);
 #define module_param_array(name, type, nump, perm)		\
 	module_param_array_named(name, name, type, nump, perm)
 ```
-
-##### MODULE_PARM_DESC
+---
+&rArr;MODULE_PARM_DESC
 
 对于非内核模块的使用者而言，他们往往拿不到内核模块的源代码，他们在插入模块带参数的模块时要正确添加参数则会产生一些困难，MODULE_PARM_DESC这个宏可以对模块中的参数进行注释，它的定义如下:
 
@@ -416,7 +418,8 @@ __setup("rootdelay=", root_delay_setup);
 
 以下函数所使用的头文件是<linux/of.h>
 
-#### 通过compatible属性查找指定节点
+---
+&rArr;通过compatible属性查找指定节点
 
 ```c
 struct device_node of_find_compatible_node(struct device_node *from,const char *type, const char *compat);
@@ -430,7 +433,8 @@ struct device_node of_find_compatible_node(struct device_node *from,const char *
 
 成功：得到节点的首地址；失败：NULL
 
-#### 通过of_device_id结构体查找指定节点
+---
+&rArr;通过of_device_id结构体查找指定节点
 
 ```c
 struct device_node *of_find_matching_node(struct device_node *from,const struct of_device_id *matches);
@@ -451,7 +455,8 @@ static const struct of_device_id geth_of_match[] = {
 
 成功：得到节点的首地址；失败：NULL 
 
-#### 通过路径查找指定节点 
+---
+&rArr;通过路径查找指定节点 
 
 ```C
 struct device_node *of_find_node_by_path(const char *path);
@@ -461,7 +466,8 @@ struct device_node *of_find_node_by_path(const char *path);
 
 成功：得到节点的首地址；失败：NULL 
 
-#### 提取指定属性的值
+---
+&rArr;提取指定属性的值
 
 ```c
 struct property *of_find_property(const struct device_node *np, const char *name, int *lenp);
@@ -475,7 +481,8 @@ struct property *of_find_property(const struct device_node *np, const char *name
 
 成功：属性值的首地址；失败：NULL
 
-#### 得到属性值中数据的数量 
+---
+&rArr;得到属性值中数据的数量 
 
 ```c
 int of_property_count_elems_of_size(const struct device_node *np,const char *propname, int elem_size);
@@ -489,7 +496,8 @@ int of_property_count_elems_of_size(const struct device_node *np,const char *pro
 
 成功：属性值的数据个数；失败：负数，绝对值是错误码
 
-#### 得到属性值中指定标号的32位数据值
+---
+&rArr;得到属性值中指定标号的32位数据值
 
 ```c
 int of_property_read_u32_index(const struct device_node *np, const char *propname, u32 index, u32 *out_value);
@@ -505,7 +513,8 @@ int of_property_read_u32_index(const struct device_node *np, const char *propnam
 
 成功：0；失败：负数，绝对值是错误码
 
-#### 提取属性值中的字符串
+---
+&rArr;提取属性值中的字符串
 
 ```c
 int of_property_read_string(struct device_node np, const char *propname, const char *out_string);
@@ -519,7 +528,8 @@ int of_property_read_string(struct device_node np, const char *propname, const c
 
 成功：0；失败：负数，绝对值是错误码 
 
-#### 提取属性值中的多字符串
+---
+&rArr;提取属性值中的多字符串
 
 ```c
 inline int of_property_read_string_index(const struct device_node *np, const char *propname, int index, const char **output);
@@ -541,7 +551,8 @@ inline int of_property_read_string_index(const struct device_node *np, const cha
 	pins = "PH2","PH3","PH4","PH7";
 ```
 
-#### 提取默认属性“#address-cells”的值
+---
+&rArr;提取默认属性“#address-cells”的值
 
 ```c
 int of_n_addr_cells(struct device_node *np);
@@ -551,7 +562,8 @@ int of_n_addr_cells(struct device_node *np);
 
 成功：地址长度的数量；失败：负数，绝对值是错误码
 
-#### 提取I/O口地址 
+---
+&rArr;提取I/O口地址 
 
 ```c
 __be32 *of_get_address(struct device_node *np, int index, u64 *size, unsigned int *flags);
@@ -567,7 +579,8 @@ __be32 *of_get_address(struct device_node *np, int index, u64 *size, unsigned in
 
 成功：I/O口地址的首地址；失败：NULL
 
-#### 提取I/O口地址转换成物理地址
+---
+&rArr;提取I/O口地址转换成物理地址
 
 ```c
 u64 of_translate_address(struct device_node *np, const __be32 *in_addr);
@@ -579,7 +592,8 @@ u64 of_translate_address(struct device_node *np, const __be32 *in_addr);
 
 成功：物理地址；失败：OF_BAD_ADDR
 
-#### 提取I/O口地址并映射成虚拟地址
+---
+&rArr;提取I/O口地址并映射成虚拟地址
 
 ```c
 void __iomem *of_iomap(struct device_node *np, int index);
@@ -591,7 +605,8 @@ void __iomem *of_iomap(struct device_node *np, int index);
 
 成功：映射好虚拟地址；失败：NULL
 
-#### 提取I/O口地址并申请I/O资源及映射成虚拟地址
+---
+&rArr;提取I/O口地址并申请I/O资源及映射成虚拟地址
 
 ```c
 void __iomem *of_io_request_and_map(struct device_node *np, int index, const char *name)
@@ -605,7 +620,8 @@ void __iomem *of_io_request_and_map(struct device_node *np, int index, const cha
 
 成功：映射好虚拟地址；失败：NULL
 
-#### 从设备树中提取资源resource（I/O地址）
+---
+&rArr;从设备树中提取资源resource（I/O地址）
 
 ```c
 int of_address_to_resource(struct device_node *np, int index, struct resource *r);
@@ -619,7 +635,8 @@ int of_address_to_resource(struct device_node *np, int index, struct resource *r
 
 成功：0；失败：负数，绝对值是错误码
 
-#### 从设备树中提取gpio口
+---
+&rArr;从设备树中提取gpio口
 
 需要包含头文件<linux/of_gpio.h>
 
@@ -635,7 +652,8 @@ int of_get_named_gpio(struct device_node *np, const char *propname, int index);
 
 成功：得到GPIO口编号；失败：负数，绝对值是错误码
 
-#### 从设备树中提取中断的数量 
+---
+&rArr;从设备树中提取中断的数量 
 
 ```c
 int of_irq_count(struct device_node *dev);
@@ -645,7 +663,8 @@ int of_irq_count(struct device_node *dev);
 
 成功：大于等于0，实际中断数量，0则表示没有中断
 
-#### 从设备树中提取中断号
+---
+&rArr;从设备树中提取中断号
 
 ```c
 int of_irq_get(struct device_node *dev, int index);
@@ -657,7 +676,8 @@ int of_irq_get(struct device_node *dev, int index);
 
 成功：中断号；失败：负数，其绝对值是错误码 
 
-#### 从设备树中提取MAC地址
+---
+&rArr;从设备树中提取MAC地址
 
 ```c
 void *of_get_mac_address(struct device_node *np);
@@ -667,7 +687,8 @@ void *of_get_mac_address(struct device_node *np);
 
 @成功：MAC（6字节）的首地址；失败：NULL
 
-#### 从设备树中提取clk
+---
+&rArr;从设备树中提取clk
 
 ```c
 struct clk *of_clk_get(struct device_node *np, int index)
@@ -679,6 +700,7 @@ struct clk *of_clk_get(struct device_node *np, int index)
 
 成功：clk结构体；失败：负数，其绝对值是错误码 
 
+---
 ## 2.4 内核线程
 
 ```c
@@ -891,14 +913,16 @@ clk_prepare_enable可以将spi0时钟源使能
 
 ## 2.6 内核中断
 
-内核中申请中断的函数为:
+### 2.6.1 GIC
+GIC(Generic Interrupt Controller)是ARM公司提供的一个通用的中断控制器,自外设的interrupt source输入信号分成两种类型,分别是私有外设中断PPI(Private Peripheral Interrupt)和共享外设中断SPI(Shared Peripheral Interrupt),还有一种通过内部产生的中断:软中断SGI(Software-generated interrupt)
+
+#### 2.6.1.1 SPI中断
+内核中申请SPI中断的函数为:
 
 ```c
 request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,
 	    const char *name, void *dev)
 ```
-
-第一个参数为
 
 @irq - 要申请的中断号
 
@@ -909,6 +933,8 @@ request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,
 @name - 中断名称
 
 @dev - 传入中断处理函数的参数
+
+(在GIC中0-15号中断为SGI中断,16-31号为PPI中断，所以在申请SPI中断时,需要把手册上的中断号减去32,即第1个SPI中断为内核中的0号中断)
 
 中断处理函数定义如下:
 
@@ -945,6 +971,12 @@ enum irqreturn {
 
 完整申请中断的流程如下:
 
+在设备树中我们以interrupts来描述中断:
+
+```dts
+interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+```
+
 ```c
 #include <linux/interrupt.h>
 
@@ -954,22 +986,66 @@ static irqreturn_t demo_handler(int irq, void *arg)
     return IRQ_HANDLED;
 }
 
+irq_num = of_irq_get(node, 0);
+
 request_irq(irq_num, demo_handler, 0, dev_name, arg);
 
 free_irq(irq_num, NULL);
 ```
 
-接下来我们看看设备树中怎么获取irq号
-
-在设备树中我们以interrupts来描述中断:
-
-```dts
-
-interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-
+#### 2.6.1.2 SGI中断
+在arm处理器中，有16个SGI，硬件中断号为0-15。它通常用于多核之间的通信。SGI通常在Linux内核中用作IPI处理器间中断。在linux内核中，已经定义了以下IPI中断，所以当用户使用自定义IPI中断时，建议使用未使用的中断8-15。
+内核中申请SGI中断的函数:
+```c
+//arch/arm/kernel/smp.c
+enum ipi_msg_type {
+	IPI_WAKEUP,
+	IPI_TIMER,
+	IPI_RESCHEDULE,
+	IPI_CALL_FUNC,
+	IPI_CPU_STOP,
+	IPI_IRQ_WORK,
+	IPI_COMPLETION,
+	IPI_CPU_BACKTRACE,
+};
 ```
 
+```c
+int set_ipi_handler(int ipinr, void *handler, char *desc)
+```
+@ipinr - 要申请的中断号
 
+@handler - 中断处理函数
+
+@desc - 中断名称
+
+内核中触发SGI中断的函数:
+```c
+void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
+```
+@mask - 传递要控制的cpu
+
+@irq - 要控制的中断号
+
+内核中清除SGI中断:
+```c
+void clear_ipi_handler(int ipinr)
+```
+@ipinr - 要清除的中断号
+
+完整申请中断的流程如下:
+```c
+void handler_name(void)
+{
+
+}
+
+set_ipi_handler(irq_num, demo_handler, dev_name);
+
+gic_raise_softirq(cpumask_of(1), irq_num);
+
+clear_ipi_handler(irq_num);
+```
 
 ## 2.7 错误打印
 
@@ -1102,12 +1178,57 @@ ioctl: Inappropriate ioctl for device
   EOWNERDEAD                     = 0x40000078,  /* Owner died */
   ENOTRECOVERABLE                = 0x40000079,  /* State not recoverable */
 ```
-
 在内核中写系统调用返回值的时候可以参考此报错表，以便使用人员进行错误分析
 
-# 3 LINUX常用调试工具
+# 3 LINUX文件系统
+## 3.1 cpio文件的打包压缩、解包解压
 
-## 3.1 devmem
+打包压缩
+```bash
+$ ls
+bin  dev  etc  init  lib  lib32  linuxrc  media  mnt  opt  proc  root run  sbin  sys  tmp  usr  var
+$ find ./* | cpio -H newc -o > rootfs.cpio
+16007 blocks
+$ ls
+bin  dev  etc  init  lib  lib32  linuxrc  media  mnt  opt  proc  root  rootfs.cpio  run  sbin  sys  tmp  usr  var
+$ gzip rootfs.cpio
+bin  dev  etc  init  lib  lib32  linuxrc  media  mnt  opt  proc  root  rootfs.cpio.gz  run  sbin  sys  tmp  usr  var
+```
+
+解包解压
+```bash
+$ ls
+rootfs.cpio.gz
+$ gunzip rootfs.cpio.gz
+$ ls
+rootfs.cpio
+$ cpio -idmv < rootfs.cpio
+......
+$ ls
+bin  dev  etc  init  lib  lib32  linuxrc  media  mnt  opt  proc  root  rootfs.cpio  run  sbin  sys  tmp  usr  var
+```
+
+## 3.2 制作ramdisk
+
+```bash
+$ ls
+rootfs
+$ ls rootfs           
+bin  dev  etc  init  lib  lib32  linuxrc  media  mnt  opt  proc  root  run  sbin  sys  tmp  usr  var
+$ genext2fs -b 81920 -d rootfs ramdisk.image
+$ ls
+rootfs ramdisk.image
+$ gzip -9 ramdisk.image 
+$ ls
+rootfs ramdisk.image.gz
+$ mkimage -A arm -T ramdisk -C gzip -n Ramdisk -d ramdisk.image.gz uramdisk.image.gz
+$ ls
+rootfs ramdisk.image.gz uramdisk.image.gz
+```
+
+# 4 LINUX常用调试工具
+
+## 4.1 devmem
 
 下载
 
@@ -1136,7 +1257,7 @@ $ ./devmem [x] [y] [z]
 
 把某个值写入某个内存地址，x为内存地址，y为写入长度可以为w、h、b，分别对应unsigned long、unsigned short、unsigned char，z为要写入的值
 
-## 3.2 i2ctools
+## 4.2 i2ctools
 
 下载
 
@@ -1189,7 +1310,7 @@ $ ./i2cset -f -y [x] [y] [z] [w]
 
 写某个节点下的某个设备地址的某个寄存器 ，x为设备节点序号，y为设备地址，z为寄存器地址，w为要写入的值
 
-## 3.3 can-utils
+## 4.3 can-utils
 
 使用
 
@@ -1229,7 +1350,7 @@ $ ip -details -statistics link show can0
 
 查看 can0 的比特率配置等,以及统计数据(接收/发送/出错帧等)
 
-## 3.4 fdisk
+## 4.4 fdisk
 
 新建分区
 
