@@ -184,7 +184,162 @@ $ ldd main
         /lib64/ld-linux-x86-64.so.2 (0x00007fce34d8f000)
 ```
 
-## 1.5 手动链接
+## 1.5 makefile
+
+### 1.5.1 makefile中常见参数
+
+---
+
+addprefix
+
+```makefile
+result = $(addprefix demo., c cpp)
+```
+
+等效于
+
+```makefile
+result = demo.c demo.cpp
+```
+
+---
+
+addsuffix 
+
+```makefile
+result = $(addprefix c, demo1 demo2)
+```
+
+等效于
+
+```makefile
+result = demo1.c demo2.c
+```
+
+---
+
+abspath
+
+```makefile
+result = $(abspath demo.c)
+```
+
+返回result为demo.c的绝对路径
+
+---
+
+if
+
+```makefile
+$(if <condition>, <then-part>,<else-part>)
+```
+
+condition参数是 if的表达式，如果其返回的为非空字符串，那么这个表达式就相当于返回真，于是，then-part会被计算，返回计算结果字符串；否则else- part会被计算，返回计算结果字符串。else-part可以省略，则表示condition为空时返回为空。
+
+---
+
+wildcard
+
+```makefile
+$(wildcard <pattern1 pattern2 ...>)
+```
+
+展开pattern中的通配符
+
+```makefile
+result = $(wildcard src/*)
+```
+
+result输出src目录下的文件列表
+
+---
+
+filter
+
+```makefile
+$(filter <pattern1 pattern2 ...>, <text>)
+```
+
+以pattern模式过滤text字符串中的单词，保留符合模式pattern的单词
+
+```makefile
+result = $(filter %.c %.cpp, $(wildcard src/*))
+```
+
+result输出src目录下所有后缀是.c和.cpp的文件序列
+
+---
+
+dir
+
+从文件名序列names中取出目录部分。目录部分是指最后一个反斜杠之前的部分
+
+```makefile
+result = $(dir build/src/demo.c src/demo.c demo.c)
+```
+
+等效于
+
+```makefile
+result = build/src/ src/ ./
+```
+
+---
+
+call
+
+```bash
+$(call <expression>,<param1>,<param2>,...)
+```
+
+call可以让param1，param2替换expression中的$1，$2
+
+```makefile
+define COMPILE
+	@echo -e "$(CYAN)" "CC:      $1"
+	@mkdir -p $(dir $2)
+	@$(CC) -MD -fPIC -c $(CFLAGS) $(abspath $1) -o $2
+endef
+
+@$(call COMPILE,demo.c,src)
+```
+
+等效于
+
+```makefile
+	@echo -e "$(CYAN)" "CC:      demo.c"
+	@mkdir -p $(dir src)
+	@$(CC) -MD -fPIC -c $(CFLAGS) $(abspath demo.c) -o src
+```
+
+---
+
+@
+
+```makefile
+echo 123
+```
+
+在makefile中直接写echo 123的话，编译时打印如下:
+
+```bash
+echo 123
+123
+```
+
+如果想在make时隐藏echo 123则可以
+
+```makefile
+@echo 123
+```
+
+这时候再make打印如下:
+
+```bash
+123
+```
+
+---
 
 
 
@@ -1226,9 +1381,17 @@ $ ls
 rootfs ramdisk.image.gz uramdisk.image.gz
 ```
 
-# 4 LINUX常用调试工具
+# 4 LINUX常用工具
 
-## 4.1 devmem
+## 4.1 git
+
+撤销上一次commit但是保留修改 
+
+```bash
+git reset --soft HEAD^
+```
+
+## 4.2 devmem
 
 下载
 
@@ -1257,7 +1420,7 @@ $ ./devmem [x] [y] [z]
 
 把某个值写入某个内存地址，x为内存地址，y为写入长度可以为w、h、b，分别对应unsigned long、unsigned short、unsigned char，z为要写入的值
 
-## 4.2 i2ctools
+## 4.3 i2ctools
 
 下载
 
@@ -1310,7 +1473,7 @@ $ ./i2cset -f -y [x] [y] [z] [w]
 
 写某个节点下的某个设备地址的某个寄存器 ，x为设备节点序号，y为设备地址，z为寄存器地址，w为要写入的值
 
-## 4.3 can-utils
+## 4.4 can-utils
 
 使用
 
@@ -1350,7 +1513,7 @@ $ ip -details -statistics link show can0
 
 查看 can0 的比特率配置等,以及统计数据(接收/发送/出错帧等)
 
-## 4.4 fdisk
+## 4.5 fdisk
 
 新建分区
 
@@ -1382,6 +1545,63 @@ command                                         :t				(选择修改分区类型�
 selected partition                              :				(填写需要修改分区类型的分区号)
 Hex code                                        :				(此时输入l可以查看所支持的所有系统类型的编号)
 ```
+
+## 4.6 docker
+
+拉取docker镜像
+
+```bash
+docker pull arm64v8/ubuntu:22.04
+```
+
+镜像导出
+
+```bash
+docker save -o nginx.tar
+```
+
+镜像导入
+
+```bash
+
+```
+
+查看镜像
+
+```bash
+
+```
+
+容器启动
+
+```bash
+
+```
+
+查看运行中的容器
+
+```bash
+
+```
+
+停止
+
+```bash
+
+```
+
+删除容器
+
+```bash
+
+```
+
+删除镜像
+
+```bash
+
+```
+
 
 
 
