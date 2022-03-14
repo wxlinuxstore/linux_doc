@@ -1388,7 +1388,7 @@ rootfs ramdisk.image.gz uramdisk.image.gz
 撤销上一次commit但是保留修改 
 
 ```bash
-git reset --soft HEAD^
+$ git reset --soft HEAD^
 ```
 
 ## 4.2 devmem
@@ -1551,58 +1551,68 @@ Hex code                                        :				(此时输入l可以查看�
 拉取docker镜像
 
 ```bash
-docker pull arm64v8/ubuntu:22.04
+$ docker pull arm64v8/ubuntu:22.04
 ```
 
 镜像导出
 
 ```bash
-docker save -o nginx.tar
+$ docker save -o arm64-ubuntu.tar
 ```
 
 镜像导入
 
 ```bash
-
+$ docker load -i arm64-ubuntu.tar
 ```
 
 查看镜像
 
 ```bash
-
+$ docker images
 ```
 
-容器启动
+容器启动，[x]为docker images中看到的镜像id
 
 ```bash
-
+$ docker run -itd [x]
 ```
 
 查看运行中的容器
 
 ```bash
-
+$ docker ps
 ```
 
-停止
+进入容器进行操作，[x]为docker ps中看到的container  id
 
 ```bash
-
+$ docker exec -it [x] /bin/sh
 ```
 
-删除容器
+在容器中退出
 
 ```bash
-
+# exit
 ```
 
-删除镜像
+停止运行中的容器，[x]为docker ps中看到的container  id
 
 ```bash
-
+$ docker stop [x]
 ```
 
+删除容器，[x]为docker ps中看到的container  id
 
+```bash
+$ docker rm [x]
+```
+
+删除镜像，[x]为docker images中看到的镜像id
+
+```bash
+$ docker image rm [x]
+```
 
 
 # 附录
