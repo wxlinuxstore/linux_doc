@@ -856,7 +856,19 @@ struct clk *of_clk_get(struct device_node *np, int index)
 成功：clk结构体；失败：负数，其绝对值是错误码 
 
 ---
-## 2.4 内核线程
+## 2.4 ACPI
+
+从系统中获取acpi
+
+```bash
+sudo cat /sys/firmware/acpi/tables/DSDT > DSDT.aml
+sudo apt-get install iasl
+iasl -d DSDT.aml
+```
+
+如此做就可以生成能看懂的DSDT.dsl
+
+## 2.5 内核线程
 
 ```c
 #include <linux/sched.h>     //wake_up_process()
@@ -881,7 +893,7 @@ demo_task = kthread_run(demo_function, NULL, "demo_function");
 kthread_stop(demo_task);
 ```
 
-## 2.5 内核时钟
+## 2.6 内核时钟
 
 内核clk框架我们以allwinner-t3为示例介绍说明，其他芯片大同小异
 
@@ -1066,12 +1078,12 @@ clk_prepare_enable可以将spi0时钟源使能
 
 设置好时钟源之后spi内部的时钟寄存器就可以读取到时钟寄存器读取到时钟源，用户会通过ioctl传入需要的频率，此时再通过spi的内部分频，让时钟频率最终输出。
 
-## 2.6 内核中断
+## 2.7 内核中断
 
-### 2.6.1 GIC
+### 2.7.1 GIC
 GIC(Generic Interrupt Controller)是ARM公司提供的一个通用的中断控制器,自外设的interrupt source输入信号分成两种类型,分别是私有外设中断PPI(Private Peripheral Interrupt)和共享外设中断SPI(Shared Peripheral Interrupt),还有一种通过内部产生的中断:软中断SGI(Software-generated interrupt)
 
-#### 2.6.1.1 SPI中断
+#### 2.7.1.1 SPI中断
 内核中申请SPI中断的函数为:
 
 ```c
@@ -1148,7 +1160,7 @@ request_irq(irq_num, demo_handler, 0, dev_name, arg);
 free_irq(irq_num, NULL);
 ```
 
-#### 2.6.1.2 SGI中断
+#### 2.7.1.2 SGI中断
 在arm处理器中，有16个SGI，硬件中断号为0-15。它通常用于多核之间的通信。SGI通常在Linux内核中用作IPI处理器间中断。在linux内核中，已经定义了以下IPI中断，所以当用户使用自定义IPI中断时，建议使用未使用的中断8-15。
 内核中申请SGI中断的函数:
 ```c
@@ -1202,9 +1214,9 @@ gic_raise_softirq(cpumask_of(1), irq_num);
 clear_ipi_handler(irq_num);
 ```
 
-## 2.7 错误打印
+## 2.8 错误打印
 
-### 2.7.1 系统调用错误
+### 2.8.1 系统调用错误
 
 在应用层可以用以下方式查看一个系统调用的错误类型
 
