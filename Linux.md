@@ -339,9 +339,7 @@ echo 123
 123
 ```
 
----
-
-
+## 
 
 # 2 LINUX内核编程
 
@@ -1214,9 +1212,13 @@ gic_raise_softirq(cpumask_of(1), irq_num);
 clear_ipi_handler(irq_num);
 ```
 
-## 2.8 错误打印
+## 2.8 内核熵
 
-### 2.8.1 系统调用错误
+Linux内核采用熵来描述数据的随机性
+
+## 2.9 错误打印
+
+### 2.9.1 系统调用错误
 
 在应用层可以用以下方式查看一个系统调用的错误类型
 
@@ -1393,9 +1395,89 @@ $ ls
 rootfs ramdisk.image.gz uramdisk.image.gz
 ```
 
-# 4 LINUX常用工具
+# 4 SSH
 
-## 4.1 git
+## 4.1 ssh的使用
+
+ssh客户端一般Linux都会自带
+远程登陆:
+
+```bash
+ssh user@ip
+```
+
+一般来说ssh端口为22，所以以上命令也等效于下面这个
+
+```bash
+ssh user@ip -p 22
+```
+
+如果所要连接ssh端口不是22，则可以使用-P手动指定端口号
+
+```bash
+ssh user@ip -p port_mun
+```
+
+----
+
+安装ssh服务端
+
+```bash
+sudo apt install openssh-server
+```
+
+重启ssh服务
+
+```bash
+service ssh restart
+```
+
+重启ssh服务后其他设备就可以对本设备使用ssh命令进行连接
+
+-----
+
+生成公钥和私钥
+
+```bash
+ssh-keygen
+```
+
+生成的公钥和私钥位于家目录的.ssh目录
+
+```bash
+$ ls ~/.ssh
+id_rsa  id_rsa.pub
+```
+
+免密登陆
+
+将A机器的~/.ssh/id_rsa.pub添加到B机器的~/.ssh/authorized_keys中，即可让A机器能免密登陆B机器
+
+使用ssh连接其他机器之后，~/.ssh/known_hosts下会记录连接过的ip和其对应的公钥信息，以后每次连接都会对其进行核验，如果二者不一致则会报警告
+
+消除警告有两种方法
+
+例如我的192.168.1.109ip在ssh连接时提示ip和其对应的公钥信息不一致
+
+1、
+
+```bash
+vim ~/.ssh/authorized_keys
+```
+
+手动删除其中关于109的信息保存退出即可
+
+2、
+
+```bash
+ssh-keygen -f "~/.ssh/known_hosts" -R "192.168.1.109"
+```
+
+这个命令本质上也是删除~/.ssh/known_hosts中关于192.168.1.109的信息，只不过是把操作集成在了ssh-keygen工具中
+
+# 5 LINUX常用工具
+
+## 5.1 git
 
 撤销上一次commit但是保留修改 
 
@@ -1403,7 +1485,15 @@ rootfs ramdisk.image.gz uramdisk.image.gz
 $ git reset --soft HEAD^
 ```
 
-## 4.2 devmem
+撤销git add状态
+
+```bash
+git restore --staged [filename]
+```
+
+
+
+## 5.2 devmem
 
 下载
 
@@ -1432,7 +1522,7 @@ $ ./devmem [x] [y] [z]
 
 把某个值写入某个内存地址，x为内存地址，y为写入长度可以为w、h、b，分别对应unsigned long、unsigned short、unsigned char，z为要写入的值
 
-## 4.3 i2ctools
+## 5.3 i2ctools
 
 下载
 
@@ -1485,7 +1575,7 @@ $ ./i2cset -f -y [x] [y] [z] [w]
 
 写某个节点下的某个设备地址的某个寄存器 ，x为设备节点序号，y为设备地址，z为寄存器地址，w为要写入的值
 
-## 4.4 can-utils
+## 5.4 can-utils
 
 使用
 
@@ -1525,7 +1615,7 @@ $ ip -details -statistics link show can0
 
 查看 can0 的比特率配置等,以及统计数据(接收/发送/出错帧等)
 
-## 4.5 fdisk
+## 5.5 fdisk
 
 新建分区
 
@@ -1558,7 +1648,7 @@ selected partition                              :				(填写需要修改分区�
 Hex code                                        :				(此时输入l可以查看所支持的所有系统类型的编号)
 ```
 
-## 4.6 docker
+## 5.6 docker
 
 拉取docker镜像
 
@@ -1626,6 +1716,81 @@ $ docker rm [x]
 $ docker image rm [x]
 ```
 
+## 5.7 rng-tools、haveged
+
+查询熵值
+
+```bash
+$ cat /proc/sys/kernel/random/entropy_avail
+68
+```
+
+安装rng-tools、haveged
+
+```bash
+$ apt install rng-tools haveged -y
+$ systemctl enable haveged
+$ systemctl enable rng-tools
+$ systemctl restart rng-tools
+```
+
+buildroot文件系统中则在menuconfig中增加haveged和rng-tools的编译选项
+
+安装完成之后再次查询熵值		
+
+```bash
+$ cat /proc/sys/kernel/random/entropy_avail
+2268
+```
+
+达到2000左右则基本合格
+
+## 5.8 static-ip
+
+ubuntu
+
+```bash
+sudo vim /etc/network/interfaces
+```
+
+添加以下启动项:
+
+```bash
+auto eth0
+iface eth0 inet static
+address 192.168.0.4
+netmask 255.255.255.0
+gateway 192.168.0.1
+```
+
+重启网络服务:
+
+```bash
+sudo /etc/init.d/networking restart
+```
+
+如果遇到一下问题
+
+```bash
+Configuring network interfaces in background...RTNETLINK answers: File exists
+```
+
+可能是以下两个服务有冲突导致的 停用NetworkManager即可
+
+```bash
+/etc/init.d/networking
+/etc/init.d/network-manager
+```
+
+如果解决不了，直接重启即可。
+
+# 6 LINUX C
+
+定义弱符号
+
+```c
+__attribute__((weak))
+```
 
 # 附录
 
