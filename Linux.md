@@ -339,8 +339,6 @@ echo 123
 123
 ```
 
-## 
-
 # 2 LINUX内核编程
 
 ## 2.1 内核模块
@@ -1161,6 +1159,7 @@ free_irq(irq_num, NULL);
 #### 2.7.1.2 SGI中断
 在arm处理器中，有16个SGI，硬件中断号为0-15。它通常用于多核之间的通信。SGI通常在Linux内核中用作IPI处理器间中断。在linux内核中，已经定义了以下IPI中断，所以当用户使用自定义IPI中断时，建议使用未使用的中断8-15。
 内核中申请SGI中断的函数:
+
 ```c
 //arch/arm/kernel/smp.c
 enum ipi_msg_type {
@@ -1216,7 +1215,7 @@ clear_ipi_handler(irq_num);
 
 Linux内核采用熵来描述数据的随机性
 
-## 2.9 错误打印
+## 2.9 内核错误打印
 
 ### 2.9.1 系统调用错误
 
@@ -1349,7 +1348,50 @@ ioctl: Inappropriate ioctl for device
 ```
 在内核中写系统调用返回值的时候可以参考此报错表，以便使用人员进行错误分析
 
+## 2.10 内核内存
+
+设备树中可以配置内核中使用的内存地址位置，一般用memory节点表示，在ft2000a中默认的内存地址，起始为0x80000000，大小为2G那么设备树中的描述则如下:
+
+```dts
+        memory {
+                device_type = "memory";
+                reg = <0x0 0x80000000 0x0 0x80000000>;
+        };
+```
+
+上述设备树的含义为从0x80000000开始0x80000000大小的这段2G的地址空间配置为内存地址
+
+注：reg中前面的0x0和0x80000000都代表了启示地址，前面的0x0表示高位的地址，所以设备树节点中可以描述64位的地址空间
+
+如:需要表示起始地址为0x100000000，大小为2G的地址段，可以描述为
+
+```dts
+        memory {
+                device_type = "memory";
+                reg = <0x1 0x00000000 0x0 0x80000000>;
+        };
+```
+
+如果我们想对ft2000a内存进行拓展，拓展大小为2G，则需要在其规定的拓展内存地址0x200000000上接入2G内存，并将设备树做如下修改:
+
+```dts
+    memory {
+            device_type = "memory";
+            reg = <0x0 0x80000000 0x0 0x80000000
+            		0x2 0x00000000 0x0 0x80000000>;
+    };
+```
+
+## 2.11 内核 PROC_FS
+
+
+
+
+
+
+
 # 3 LINUX文件系统
+
 ## 3.1 cpio文件的打包压缩、解包解压
 
 打包压缩
@@ -1490,8 +1532,6 @@ $ git reset --soft HEAD^
 ```bash
 git restore --staged [filename]
 ```
-
-
 
 ## 5.2 devmem
 
@@ -1750,7 +1790,7 @@ $ cat /proc/sys/kernel/random/entropy_avail
 ubuntu
 
 ```bash
-sudo vim /etc/network/interfaces
+$ sudo vim /etc/network/interfaces
 ```
 
 添加以下启动项:
@@ -1766,7 +1806,7 @@ gateway 192.168.0.1
 重启网络服务:
 
 ```bash
-sudo /etc/init.d/networking restart
+$ sudo /etc/init.d/networking restart
 ```
 
 如果遇到一下问题
@@ -1783,6 +1823,63 @@ Configuring network interfaces in background...RTNETLINK answers: File exists
 ```
 
 如果解决不了，直接重启即可。
+
+## 5.9 xfonts-utils
+
+查看系统当前支持的字体列表
+
+```bash
+$ fc-list
+```
+
+为linux系统添加windows系统字体
+
+```bash
+$ sudo cd /usr/share/fonts/ 
+$ sudo mkdir new
+$ sudo chmod -R 755 /usr/share/fonts/new
+```
+
+将C:\Windows\Fonts的文件拷贝到刚刚创建的new目录下
+
+```bash
+$ sudo vim /etc/fonts/fonts.conf 
+```
+
+在如下位置中添加一行:
+
+```conf
+<dir>/usr/share/fonts/new</dir>
+```
+
+------
+
+```conf
+<!-- Font directory list -->
+
+        <dir>/usr/share/fonts</dir>
+        <dir>/usr/local/share/fonts</dir>
+        <dir>/usr/share/fonts/new</dir>
+        <dir prefix="xdg">fonts</dir>
+        <!-- the following element will be removed in the future -->
+        <dir>~/.fonts</dir>
+
+<!--
+```
+
+------
+
+刷新当前系统字体
+
+```bash
+$ fc-cache
+```
+
+查看系统当前支持的字体列表可以看到新添加的字体
+
+```bash
+$ fc-list
+```
 
 # 6 LINUX C
 
