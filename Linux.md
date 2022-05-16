@@ -207,7 +207,7 @@ result = demo.c demo.cpp
 addsuffix 
 
 ```makefile
-result = $(addprefix c, demo1 demo2)
+result = $(addsuffix c, demo1 demo2)
 ```
 
 等效于
@@ -337,6 +337,14 @@ echo 123
 
 ```bash
 123
+```
+
+## 1.6 编程宏
+
+定义弱符号
+
+```c
+__attribute__((weak))
 ```
 
 # 2 LINUX内核编程
@@ -1384,12 +1392,6 @@ ioctl: Inappropriate ioctl for device
 
 ## 2.11 内核 PROC_FS
 
-
-
-
-
-
-
 # 3 LINUX文件系统
 
 ## 3.1 cpio文件的打包压缩、解包解压
@@ -1516,6 +1518,28 @@ ssh-keygen -f "~/.ssh/known_hosts" -R "192.168.1.109"
 ```
 
 这个命令本质上也是删除~/.ssh/known_hosts中关于192.168.1.109的信息，只不过是把操作集成在了ssh-keygen工具中
+
+## 4.2ssh无法登陆问题汇总
+
+报错:
+
+```bash
+/var/empty must be owned by root and not group or world-writable.
+```
+
+解决方法:
+
+```bash
+$ chown root.root /var/empty
+$ mkdir -p /var/empty/sshd
+$ chown -R root.root /var/empty/sshd
+$ chmod 744 /var/empty/sshd
+$ /etc/init.d/S50sshd restart
+```
+
+-------------
+
+
 
 # 5 LINUX常用工具
 
@@ -1881,13 +1905,86 @@ $ fc-cache
 $ fc-list
 ```
 
-# 6 LINUX C
+# 6 ISO
 
-定义弱符号
+## 6.1查看磁盘UUID
 
-```c
-__attribute__((weak))
+```bash
+ls -l /dev/disk/by-uuid
 ```
+
+```
+blkid -s UUID
+```
+
+
+
+## 6.2 efibootmgr
+
+管理uefi启动项
+
+查看:
+
+```bash
+efibootmgr
+BootCurrent: 0005
+Timeout: 5 seconds
+BootOrder: 0001,0002,0003,0004,0005
+Boot0001* Enter Setup
+Boot0002* Update Bios
+Boot0003* UEFI SM681GEE AES
+Boot0004* UEFI Shell
+Boot0005* UEFI aigo MiniKing 90009737AB26B655
+```
+
+删除:
+
+```bash
+efibootmgr --delete-bootnum --bootnum 5
+```
+
+
+
+```bash
+2444945b-8416-8246-9fe4-06157710186e
+ddebb8d2-1c14-4b2e-b9c9-4d905b926b19
+```
+
+
+
+```bash
+mount -o bind /dev/ /mnt/dev/
+mount -o bind /proc/ /mnt/proc/
+mount -o bind /sys /mnt/sys
+
+chroot /mnt
+```
+
+
+
+```bash
+grub-install --target=arm64-efi --efi-directory=/boot/efi --bootloader-id=JARI
+```
+
+加--removable不回置顶
+
+```
+grub-install --target=arm64-efi --efi-directory=/boot/efi --bootloader-id=JARI --removable
+```
+
+
+
+```
+efibootmgr --create --disk=/dev/nvme0n1 --part=1 --label="JARI" --loader='/mnt/boot/efi/EFI/JARI/grubaa64.efi'
+```
+
+
+
+```bash
+efibootmgr -o 0010,0000,0011,0012,0013,0017,0018,0019,001A,001B,001C,001D,001E
+```
+
+
 
 # 附录
 
