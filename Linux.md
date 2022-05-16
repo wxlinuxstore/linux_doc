@@ -207,7 +207,7 @@ result = demo.c demo.cpp
 addsuffix 
 
 ```makefile
-result = $(addsuffix c, demo1 demo2)
+result = $(addsuffix .c, demo1 demo2)
 ```
 
 等效于
