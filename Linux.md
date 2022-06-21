@@ -193,7 +193,7 @@ $ ldd main
 addprefix
 
 ```makefile
-result = $(addprefix demo., c cpp)
+result = $(addprefix demo, .c .cpp)
 ```
 
 等效于
@@ -1404,7 +1404,7 @@ $ find ./* | cpio -H newc -o > rootfs.cpio
 16007 blocks
 $ ls
 bin  dev  etc  init  lib  lib32  linuxrc  media  mnt  opt  proc  root  rootfs.cpio  run  sbin  sys  tmp  usr  var
-$ gzip rootfs.cpio
+$ gzip rootfs.x
 bin  dev  etc  init  lib  lib32  linuxrc  media  mnt  opt  proc  root  rootfs.cpio.gz  run  sbin  sys  tmp  usr  var
 ```
 
@@ -1470,13 +1470,13 @@ ssh user@ip -p port_mun
 sudo apt install openssh-server
 ```
 
-重启ssh服务
+重启sshd服务
 
 ```bash
 service ssh restart
 ```
 
-重启ssh服务后其他设备就可以对本设备使用ssh命令进行连接
+重启sshd服务后其他设备就可以对本设备使用ssh命令进行连接
 
 -----
 
@@ -1554,7 +1554,7 @@ $ git reset --soft HEAD^
 撤销git add状态
 
 ```bash
-git restore --staged [filename]
+$ git restore --staged [filename]
 ```
 
 ## 5.2 devmem
@@ -1859,7 +1859,7 @@ $ fc-list
 为linux系统添加windows系统字体
 
 ```bash
-$ sudo cd /usr/share/fonts/ 
+$ cd /usr/share/fonts/ 
 $ sudo mkdir new
 $ sudo chmod -R 755 /usr/share/fonts/new
 ```
